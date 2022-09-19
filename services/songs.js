@@ -18,8 +18,8 @@ async function getMultiple(page = 1) {
 }
 
 async function create(song) {
-	const theQuery = `INSERT INTO kq_songs	(artist, title)
-		VALUES ('${song.artist.toString()}', '${song.title.toString()}')`;
+	const theQuery = `INSERT INTO kq_songs	(artist, title, embedurl)
+		VALUES ('${song.artist.toString()}', '${song.title.toString()}', '${song.embedurl}')`;
 
 	const result = await db.query(
 			theQuery
@@ -33,6 +33,7 @@ async function create(song) {
   	'id': result.insertId,
   	'artist': song.artist,
   	'title': song.title,
+  	'embedurl': song.embedurl
   };
 }
 

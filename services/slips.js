@@ -5,7 +5,7 @@ const config = require('../config');
 async function getAll() {
 
 	const rows = await db.query(
-		`SELECT slips.id, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title 
+		`SELECT slips.id, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
     FROM kq_singers AS singers 
     JOIN kq_slips AS slips ON singers.id = slips.singer_id 
     JOIN kq_songs AS songs ON slips.song_id = songs.id;`
@@ -24,7 +24,8 @@ async function getAll() {
 		  	song: {
 		  		id: row.songID,
 		  		artist: row.artist,
-		  		title: row.title
+		  		title: row.title,
+		  		embedurl: row.embedurl
 		  	}
 		  }
 		  results.push(slip);
@@ -36,7 +37,7 @@ async function getAll() {
 
 async function get(id){
   const result = await db.query(
-    `SELECT singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title 
+    `SELECT singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
     FROM kq_singers AS singers 
     JOIN kq_slips AS slips ON singers.id = slips.singer_id 
     JOIN kq_songs AS songs ON slips.song_id = songs.id;
@@ -52,7 +53,8 @@ async function get(id){
   	song: {
   		id: result.songID,
   		artist: result.artist,
-  		title: result.title
+  		title: result.title,
+  		embedurl: result.embedurl
   	}
   }
 
