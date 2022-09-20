@@ -6,7 +6,7 @@ async function getMultiple(page = 1) {
 	const offset = helper.getOffset(page, config.listPerPage);
 	const rows = await db.query(
 		`SELECT id, title, artist, embedurl, validation_requested
-    	FROM kq_songs LIMIT ${offset},${config.listPerPage}`
+    	FROM kq_songs`
 		);
 	const data = helper.emptyOrRows(rows);
 	const meta = {page};
