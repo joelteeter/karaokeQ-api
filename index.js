@@ -5,6 +5,8 @@ const singersRouter = require("./routes/singers");
 const songsRouter = require("./routes/songs");
 const slipsRouter = require("./routes/slips");
 const cors = require("cors");
+const helmet = require("helmet");
+
 app.use(express.json());
 app.use(
 	express.urlencoded({
@@ -14,6 +16,8 @@ app.use(
 app.use(cors({
 	origin: 'http://localhost:4200'
 }))
+app.use(helmet());
+
 app.get("/", (req, res) => {
 	res.json({ message: "ok" });
 });
