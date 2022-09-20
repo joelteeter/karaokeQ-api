@@ -15,7 +15,7 @@ app.use(
 	})
 );
 app.use(cors({
-	origin: 'http://localhost:4200'
+	origin: 'https://joelteeter.com/karaokeq'
 }))
 app.use(helmet());
 
