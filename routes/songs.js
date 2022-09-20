@@ -16,8 +16,10 @@ router.get('/', async function(req, res, next) {
 router.post('/', async function(req, res, next) {
 	try {
 		if(req.body && req.body.length > 1){
+			console.log('creating bulk songs')
 			res.json(await songs.createBulk(req.body));
 		} else {
+			console.log('creating song')
 			res.json(await songs.create(req.body));
 		}
 	} catch(err) {

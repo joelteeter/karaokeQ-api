@@ -10,7 +10,6 @@ async function getAll() {
     JOIN kq_slips AS slips ON singers.id = slips.singer_id 
     JOIN kq_songs AS songs ON slips.song_id = songs.id;`
 		);
-	console.log(rows);
 	const results = [];
 	if(rows.length > 0) {
 		rows.forEach( row => {
@@ -62,6 +61,7 @@ async function get(id){
 }
 
 async function create(slip) {
+	console.log('creating new slip', slip);
 	const theQuery = `INSERT INTO kq_slips	(singer_id, song_id, position)
 		VALUES ('${slip.singer.id}', '${slip.song.id}', '${slip.position}')`;
 
@@ -83,7 +83,8 @@ async function create(slip) {
 		'song': {
 			id: slip.song.id,
 			artist: slip.song.artist,
-			title: slip.song.title
+			title: slip.song.title,
+			embedurl: slip.song.embedurl
 		},
 		'isCollapsed': true
   };
