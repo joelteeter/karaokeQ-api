@@ -28,6 +28,16 @@ router.post('/', async function(req, res, next) {
 	}
 });
 
+/* PUT song */
+router.put('/:id', async function(req, res, next) {
+	try {
+		res.json(await songs.update(req.params.id, req.body));
+	} catch (err) {
+		console.error(`Error while updating song`, err.message);
+		next(err);
+	}
+});
+
 /* SEARCH songs */
 router.get('/search/:searchTerm?', async function(req, res, next) {
 	if(req.query && req.query.searchTerm) {
@@ -38,6 +48,16 @@ router.get('/search/:searchTerm?', async function(req, res, next) {
 			next(err);
 		}
 	}
+});
+
+/* DELETE song */
+router.delete('/:id', async function(req, res, next) {
+  try {
+    res.json(await songs.remove(req.params.id));
+  } catch (err) {
+    console.error(`Error while deleting song`, err.message);
+    next(err);
+  }
 });
 
 module.exports = router;
