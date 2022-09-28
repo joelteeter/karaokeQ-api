@@ -1,10 +1,15 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const singersRouter = require("./routes/singers");
 const songsRouter = require("./routes/songs");
 const slipsRouter = require("./routes/slips");
+const sessionsRouter = require("./routes/sessions");
 const cors = require("cors");
+const helmet = require("helmet");
+const bodyParser = require('body-parser');
+
 app.use(express.json());
 app.use(
 	express.urlencoded({
@@ -12,15 +17,19 @@ app.use(
 	})
 );
 app.use(cors({
-	origin: 'http://localhost:4200'
+	origin: 'https://joelteeter.com'
 }))
+app.use(helmet());
+
 app.get("/", (req, res) => {
 	res.json({ message: "ok" });
 });
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/singers", singersRouter);
 app.use("/songs", songsRouter);
 app.use("/slips", slipsRouter);
+app.use("/sessions", sessionsRouter);
 
 
 /* Error handler middleware */

@@ -4,11 +4,21 @@ const slips = require('../services/slips');
 
 /* GET slips */
 router.get('/', async function(req, res, next) {
-	try {
-		res.json(await slips.getAll());
-	} catch (err) {
-		console.error(`Error while getting slips data`, err.message);
-		next(err);
+	let sessionsId = req.query.sessionid;
+	if(sessionsId) {
+		try {
+		res.json(await slips.getAllBySessionId(sessionsId));
+		} catch (err) {
+			console.error(`Error while getting slips data`, err.message);
+			next(err);
+		}
+	} else {
+		try {
+			res.json(await slips.getAll());
+		} catch (err) {
+			console.error(`Error while getting slips data`, err.message);
+			next(err);
+		}
 	}
 });
 /* GET slips */
