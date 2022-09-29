@@ -4,20 +4,26 @@ const singers = require('../services/singers');
 
 /* GET singers */
 router.get('/', async function(req, res, next) {
-	try {
-		res.json(await singers.getMultiple(req.query.page));
-	} catch (err) {
-		console.error(`Error while getting singers data`, err.message);
-		next(err);
+	let sessionId = req.query.sessionid;
+	if(sessionId) {
+		try {
+			res.json(await singers.getMultiple(sessionId));
+		} catch (err) {
+			console.error(`Error while getting singers data`, err.message);
+			next(err);
+		}
 	}
 });
 /* GET singers */
 router.get('/:id', async function(req, res, next) {
-	try {
-		res.json(await singers.get(req.params.id));
-	} catch (err) {
-		console.error(`Error while getting singer data`, err.message);
-		next(err);
+	let sessionId = req.query.sessionid;
+	if(sessionId) {
+		try {
+			res.json(await singers.get(req.params.id, sessionId));
+		} catch (err) {
+			console.error(`Error while getting singer data`, err.message);
+			next(err);
+		}
 	}
 });
 
@@ -43,12 +49,25 @@ router.put('/:id', async function(req, res, next) {
 
 /* DELETE singer */
 router.delete('/:id', async function(req, res, next) {
+
   try {
     res.json(await singers.remove(req.params.id));
   } catch (err) {
     console.error(`Error while deleting singer`, err.message);
     next(err);
   }
+	
+});
+router.delete('/', async function(req, res, next) {
+	let sessionId = req.query.sessionid;
+	if(sessionId) {
+	  try {
+	    res.json(await singers.removeBySessionId(sessionId));
+	  } catch (err) {
+	    console.error(`Error while deleting session singers`, err.message);
+	    next(err);
+	  }
+	}
 });
 
 module.exports = router;

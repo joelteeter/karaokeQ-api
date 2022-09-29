@@ -5,7 +5,7 @@ const config = require('../config');
 async function getAll() {
 
 	const rows = await db.query(
-		`SELECT slips.id, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
+		`SELECT slips.id, slips.session_id, slips.position, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
     FROM kq_singers AS singers 
     JOIN kq_slips AS slips ON singers.id = slips.singer_id 
     JOIN kq_songs AS songs ON slips.song_id = songs.id;`
@@ -40,7 +40,8 @@ async function getAllBySessionId(sessionId) {
 		`SELECT slips.id, slips.session_id, slips.position, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
     FROM kq_singers AS singers 
     JOIN kq_slips AS slips ON (singers.id = slips.singer_id AND slips.session_id = ${sessionId})
-    JOIN kq_songs AS songs ON slips.song_id = songs.id;
+    JOIN kq_songs AS songs ON slips.song_id = songs.id
+    ORDER BY slips.position;
     
     `
 		);
@@ -112,6 +113,7 @@ async function create(slip) {
   	return {
   	'id': result.insertId,
   	'sessionId': slip.sessionId,
+  	'position': slip.position,
   	'singer': {
   		id: slip.singer.id,
   		name: slip.singer.name,
@@ -129,7 +131,7 @@ async function create(slip) {
 
 async function update(id, slip){
 	const theQuery = `UPDATE kq_slips
-		SET singer_id="${slip.singer.id}", song_id="${slip.song.id}"
+		SET singer_id="${slip.singer.id}", song_id="${slip.song.id}", position="${slip.position}"
 	    WHERE id=${Number(id)}`;
 	const result = await db.query(
 		theQuery
@@ -146,7 +148,21 @@ async function remove(id){
   let message = 'Error in deleting slip';
 
   if (result.affectedRows) {
-    message = 'Singer deleted successfully';
+    message = 'Slip deleted successfully';
+  }
+
+  return {message};
+}
+
+async function removeBySessionId(sessionId){
+  const result = await db.query(
+    `DELETE FROM kq_slips WHERE session_id=${sessionId}`
+  );
+
+  let message = 'Error in deleting session slips';
+
+  if (result.affectedRows) {
+    message = 'Session slips deleted successfully';
   }
 
   return {message};
@@ -158,5 +174,6 @@ module.exports = {
 	get,
 	create,
 	update,
-	remove
+	remove,
+	removeBySessionId
 }
