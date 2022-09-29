@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
+//const port =  3000;
 const singersRouter = require("./routes/singers");
 const songsRouter = require("./routes/songs");
 const slipsRouter = require("./routes/slips");
@@ -19,6 +20,9 @@ app.use(
 app.use(cors({
 	origin: 'https://joelteeter.com'
 }))
+// app.use(cors({
+// 	origin: 'http://localhost:4200'
+// }))
 app.use(helmet());
 
 app.get("/", (req, res) => {

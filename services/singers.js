@@ -2,21 +2,21 @@ const db = require('./db');
 const helper = require('../helper');
 const config = require('../config');
 
-async function getMultiple(page = 1) {
-	const offset = helper.getOffset(page, config.listPerPage);	
+async function getMultiple(session_id) {
+	console.log('getting singers with session_id', session_id);
 	const rows = await db.query(
-		`SELECT id, name, color
-    	FROM kq_singers LIMIT ${offset},${config.listPerPage}`
+		`SELECT id, session_id, name, color
+    	FROM kq_singers 
+    	WHERE kq_singers.session_id = ${session_id};`
 		);
 	const data = helper.emptyOrRows(rows);
-	const meta = {page};
 
 	return data;
 }
 
-async function get(id){
+async function get(id, session_id){
   const result = await db.query(
-    `SELECT id, name, color
+    `SELECT id, session_id, name, color
      FROM kq_singers WHERE id=${id}`
   );
 
@@ -31,8 +31,8 @@ async function get(id){
 
 async function create(singer) {
 
-	const theQuery = `INSERT INTO kq_singers	(name, color)
-		VALUES ('${singer.name.toString()}', '${singer.color.toString()}')`;
+	const theQuery = `INSERT INTO kq_singers	(session_id, name, color)
+		VALUES ('${singer.sessionId}','${singer.name.toString()}', '${singer.color.toString()}')`;
 
 	const result = await db.query(
 			theQuery
@@ -44,6 +44,7 @@ async function create(singer) {
 
   	return {
   	'id': result.insertId,
+  	'sessionId': singer.sessionId,
   	'name': singer.name,
   	'color': singer.color,
   };
@@ -80,10 +81,25 @@ async function remove(id){
   return {message};
 }
 
+async function removeBySessionId(sessionId){
+  const result = await db.query(
+    `DELETE FROM kq_singers WHERE session_id=${sessionId}`
+  );
+
+  let message = 'Error in deleting session singers';
+
+  if (result.affectedRows) {
+    message = 'Session singers deleted successfully';
+  }
+
+  return {message};
+}
+
 module.exports = {
 	getMultiple,
 	get,
 	create,
 	update,
-	remove
+	remove,
+	removeBySessionId
 }

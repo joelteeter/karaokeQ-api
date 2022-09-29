@@ -4,10 +4,10 @@ const slips = require('../services/slips');
 
 /* GET slips */
 router.get('/', async function(req, res, next) {
-	let sessionsId = req.query.sessionid;
-	if(sessionsId) {
+	let sessionId = req.query.sessionid;
+	if(sessionId) {
 		try {
-		res.json(await slips.getAllBySessionId(sessionsId));
+		res.json(await slips.getAllBySessionId(sessionId));
 		} catch (err) {
 			console.error(`Error while getting slips data`, err.message);
 			next(err);
@@ -53,12 +53,24 @@ router.put('/:id', async function(req, res, next) {
 
 /* DELETE slip */
 router.delete('/:id', async function(req, res, next) {
-  try {
+
+	try {
     res.json(await slips.remove(req.params.id));
   } catch (err) {
     console.error(`Error while deleting slip`, err.message);
     next(err);
   }
+	
 });
-
+router.delete('/', async function(req, res, next) {
+	let sessionId = req.query.sessionid;
+	if(sessionId) {
+	  try {
+	    res.json(await slips.removeBySessionId(sessionId));
+	  } catch (err) {
+	    console.error(`Error while deleting session slips`, err.message);
+	    next(err);
+	  }
+	}
+});
 module.exports = router;
