@@ -15,6 +15,7 @@ async function getAll() {
 		rows.forEach( row => {
 			let slip = {
 		  	id: row.id,
+		  	sessionId: row.session_id,
 		  	singer: {
 		  		id: row.singerID,
 		  		name: row.name,

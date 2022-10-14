@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const sessions = require('../services/sessions');
+const { body } = require('express-validator');
 
 /* GET sessions */
 router.get('/', async function(req, res, next) {
@@ -22,17 +23,21 @@ router.get('/:id', async function(req, res, next) {
 });
 
 /* POST session */
-router.post('/', async function(req, res, next) {
-	try {
-		res.json(await sessions.create(req.body));
-	} catch(err) {
-		console.error(`Error while creating session`, err.message);
-		next(err);
-	}
+router.post('/',
+	body('name').not().isEmpty().trim().escape(),
+	async function(req, res, next) {
+		try {
+			res.json(await sessions.create(req.body));
+		} catch(err) {
+			console.error(`Error while creating session`, err.message);
+			next(err);
+		}
 });
 
 /* PUT session */
-router.put('/:id', async function(req, res, next) {
+router.put('/:id',
+	body('name').not().isEmpty().trim().escape(),
+ async function(req, res, next) {
 	try {
 		res.json(await sessions.update(req.params.id, req.body));
 	} catch (err) {

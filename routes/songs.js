@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const songs = require('../services/songs');
+const { body } = require('express-validator');
 
 /* GET songs */
 router.get('/', async function(req, res, next) {
@@ -13,7 +14,11 @@ router.get('/', async function(req, res, next) {
 });
 
 /* POST song */
-router.post('/', async function(req, res, next) {
+router.post('/', 
+	body('title').not().isEmpty().trim().escape(),
+	body('artist').not().isEmpty().trim().escape(),
+	body('embedurl').not().isEmpty().trim().escape(),
+	async function(req, res, next) {
 	try {
 		if(req.body && req.body.length > 1){
 			console.log('creating bulk songs')
@@ -29,7 +34,11 @@ router.post('/', async function(req, res, next) {
 });
 
 /* PUT song */
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', 
+	body('title').not().isEmpty().trim().escape(),
+	body('artist').not().isEmpty().trim().escape(),
+	body('embedurl').not().isEmpty().trim().escape(),
+	async function(req, res, next) {
 	try {
 		res.json(await songs.update(req.params.id, req.body));
 	} catch (err) {

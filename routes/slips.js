@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const slips = require('../services/slips');
+const { body } = require('express-validator');
 
 /* GET slips */
 router.get('/', async function(req, res, next) {

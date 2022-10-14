@@ -8,7 +8,8 @@ async function getMultiple(page = 1) {
 		`SELECT id, name
     	FROM kq_sessions LIMIT ${offset},${config.listPerPage}`
 		);
-	const data = helper.emptyOrRows(rows);
+	let data = helper.emptyOrRows(rows);
+	data = helper.decodeProperties(rows);;
 	const meta = {page};
 
 	return data;
@@ -25,12 +26,12 @@ async function get(id){
   if (result.affectedRows) {
     message = 'Session GET successfull';
   }
-
-  return {result};
+  const returnResult = helper.decodeProperties(result)
+  return returnResult;
 }
 
 async function create(session) {
-
+	console.log('the session to create ', session);
 	const theQuery = `INSERT INTO kq_sessions	(name)
 		VALUES ('${session.name.toString()}')`;
 
@@ -42,10 +43,10 @@ async function create(session) {
   		message = 'Created Successfully';
   	}
 
-  	return {
-  	'id': result.insertId,
-  	'name': session.name
-  };
+  	return helper.decodeProperties({
+	  	'id': result.insertId,
+	  	'name': session.name
+	  });
 }
 
 async function update(id, session){

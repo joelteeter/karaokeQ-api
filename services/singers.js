@@ -9,7 +9,8 @@ async function getMultiple(session_id) {
     	FROM kq_singers 
     	WHERE kq_singers.session_id = ${session_id};`
 		);
-	const data = helper.emptyOrRows(rows);
+	let data = helper.emptyOrRows(rows);
+	data = helper.decodeProperties(rows);
 
 	return data;
 }
@@ -25,8 +26,8 @@ async function get(id, session_id){
   if (result.affectedRows) {
     message = 'Singer GET successfull';
   }
-
-  return {result};
+  const returnResult = helper.decodeProperties(result);
+  return {returnResult};
 }
 
 async function create(singer) {
@@ -42,12 +43,13 @@ async function create(singer) {
   		message = 'Created Successfully';
   	}
 
-  	return {
-  	'id': result.insertId,
-  	'sessionId': singer.sessionId,
-  	'name': singer.name,
-  	'color': singer.color,
-  };
+  	const returnResult = {
+			'id': result.insertId,
+			'sessionId': singer.sessionId,
+			'name': singer.name,
+			'color': singer.color,
+	  };
+	  return helper.decodeProperties(returnResult);
 }
 
 async function update(id, singer){
