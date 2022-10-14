@@ -3,13 +3,15 @@ const helper = require('../helper');
 const config = require('../config');
 
 async function getMultiple(page = 1) {
+	//TODO: pagify these, front end too!
 	const offset = helper.getOffset(page, config.listPerPage);
 	const rows = await db.query(
 		`SELECT id, title, artist, embedurl, validation_requested
     	FROM kq_songs`
 		);
-	const data = helper.emptyOrRows(rows);
+	let data = helper.emptyOrRows(rows);
 	const meta = {page};
+	data = helper.decodeProperties(data);
 
 	return {
 		data,
@@ -30,16 +32,17 @@ async function create(song) {
   		message = 'Created Successfully';
   	}
 
-  	return {
-  	'id': result.insertId,
-  	'artist': song.artist,
-  	'title': song.title,
-  	'embedurl': song.embedurl
-  };
+  	return helper.decodeProperties({
+	  	'id': result.insertId,
+	  	'artist': song.artist,
+	  	'title': song.title,
+	  	'embedurl': song.embedurl
+	  });
 }
 
 async function createBulk(songs) {
 	/* remove current songs */
+	//TODO: remove, this is from karafun data dump
 	let thing = await db.query(`DELETE FROM kq_songs`);
 	const theQuery = `
            insert into kq_songs 
@@ -77,7 +80,7 @@ async function search(query) {
 	);
 	const data = helper.emptyOrRows(rows);
 
-	return data;
+	return helper.decodeProperties(data);
 }
 
 async function remove(id){

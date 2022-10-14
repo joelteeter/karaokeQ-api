@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const singers = require('../services/singers');
+const { body } = require('express-validator');
 
 /* GET singers */
 router.get('/', async function(req, res, next) {
@@ -28,7 +29,10 @@ router.get('/:id', async function(req, res, next) {
 });
 
 /* POST singer */
-router.post('/', async function(req, res, next) {
+router.post('/', 
+	body('name').not().isEmpty().trim().escape(),
+	body('color').not().isEmpty().trim().escape(),
+	async function(req, res, next) {
 	try {
 		res.json(await singers.create(req.body));
 	} catch(err) {
@@ -38,7 +42,10 @@ router.post('/', async function(req, res, next) {
 });
 
 /* PUT singer */
-router.put('/:id', async function(req, res, next) {
+router.put('/:id',
+	body('name').not().isEmpty().trim().escape(),
+	body('color').not().isEmpty().trim().escape(),
+ async function(req, res, next) {
 	try {
 		res.json(await singers.update(req.params.id, req.body));
 	} catch (err) {
