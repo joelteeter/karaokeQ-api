@@ -12,7 +12,7 @@ router.get('/', async function(req, res, next) {
 		next(err);
 	}
 });
-/* GET sessions */
+/* GET session */
 router.get('/:id', async function(req, res, next) {
 	try {
 		res.json(await sessions.get(req.params.id));

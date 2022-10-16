@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const songs = require('../services/songs');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 /* GET songs */
 router.get('/', async function(req, res, next) {
@@ -14,6 +14,7 @@ router.get('/', async function(req, res, next) {
 });
 
 /* POST song */
+//TODO: validate embedurl is lenght of youtube videoId
 router.post('/', 
 	body('title').not().isEmpty().trim().escape(),
 	body('artist').not().isEmpty().trim().escape(),
@@ -48,7 +49,9 @@ router.put('/:id',
 });
 
 /* SEARCH songs */
-router.get('/search/:searchTerm?', async function(req, res, next) {
+router.get('/search/:searchTerm?',
+	param('searchTerm').not().isEmpty().trim().escape(), 
+	async function(req, res, next) {
 	if(req.query && req.query.searchTerm) {
 		try {
 			res.json(await songs.search(req.query.searchTerm));

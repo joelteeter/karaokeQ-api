@@ -3,10 +3,11 @@ const helper = require('../helper');
 const config = require('../config');
 
 async function getMultiple(page = 1) {
+	//TODO: use pagination, ie  LIMIT ${offset},${config.listPerPage}
 	const offset = helper.getOffset(page, config.listPerPage);	
 	const rows = await db.query(
 		`SELECT id, name
-    	FROM kq_sessions LIMIT ${offset},${config.listPerPage}`
+    	FROM kq_sessions`
 		);
 	let data = helper.emptyOrRows(rows);
 	data = helper.decodeProperties(rows);;
@@ -18,7 +19,7 @@ async function getMultiple(page = 1) {
 async function get(id){
   const result = await db.query(
     `SELECT id, name
-     FROM kq_sessions WHERE id=${id}`
+     FROM kq_sessions WHERE id=${Number(id)}`
   );
 
   let message = 'Error in getting session';
@@ -31,7 +32,6 @@ async function get(id){
 }
 
 async function create(session) {
-	console.log('the session to create ', session);
 	const theQuery = `INSERT INTO kq_sessions	(name)
 		VALUES ('${session.name.toString()}')`;
 

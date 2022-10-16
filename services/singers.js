@@ -3,7 +3,6 @@ const helper = require('../helper');
 const config = require('../config');
 
 async function getMultiple(session_id) {
-	console.log('getting singers with session_id', session_id);
 	const rows = await db.query(
 		`SELECT id, session_id, name, color
     	FROM kq_singers 
@@ -18,7 +17,7 @@ async function getMultiple(session_id) {
 async function get(id, session_id){
   const result = await db.query(
     `SELECT id, session_id, name, color
-     FROM kq_singers WHERE id=${id}`
+     FROM kq_singers WHERE id=${Number(id)}`
   );
 
   let message = 'Error in getting singer';

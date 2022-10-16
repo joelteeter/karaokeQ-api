@@ -15,7 +15,7 @@ router.get('/', async function(req, res, next) {
 		}
 	}
 });
-/* GET singers */
+/* GET singer */
 router.get('/:id', async function(req, res, next) {
 	let sessionId = req.query.sessionid;
 	if(sessionId) {
@@ -54,17 +54,16 @@ router.put('/:id',
 	}
 });
 
-/* DELETE singer */
+/* DELETE singer by id */
 router.delete('/:id', async function(req, res, next) {
-
   try {
     res.json(await singers.remove(req.params.id));
   } catch (err) {
     console.error(`Error while deleting singer`, err.message);
     next(err);
-  }
-	
+  }	
 });
+/* DELETE singers by sessionsId */
 router.delete('/', async function(req, res, next) {
 	let sessionId = req.query.sessionid;
 	if(sessionId) {
