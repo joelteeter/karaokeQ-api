@@ -11,8 +11,9 @@ async function getAll() {
     JOIN kq_songs AS songs ON slips.song_id = songs.id;`
 		);
 	const results = [];
-	if(rows.length > 0) {
-		rows.forEach( row => {
+	data = helper.decodeProperties(rows);;
+	if(data.length > 0) {
+		data.forEach( row => {
 			let slip = {
 		  	id: row.id,
 		  	sessionId: row.session_id,
@@ -47,8 +48,9 @@ async function getAllBySessionId(sessionId) {
     `
 		);
 	const results = [];
-	if(rows.length > 0) {
-		rows.forEach( row => {
+	data = helper.decodeProperties(rows);;
+	if(data.length > 0) {
+		data.forEach( row => {
 			let slip = {
 		  	id: row.id,
 		  	sessionId: row.session_id,
@@ -78,9 +80,9 @@ async function get(id){
     FROM kq_singers AS singers 
     JOIN kq_slips AS slips ON singers.id = slips.singer_id 
     JOIN kq_songs AS songs ON slips.song_id = songs.id;
-			WHERE slips.id = ${id}`
+			WHERE slips.id = ${Number(id)}`
   );
-  let slip = {
+  let slip = helper.decodeProperties({
   	id: id,
   	singer: {
   		id: result.singerID,
@@ -93,7 +95,7 @@ async function get(id){
   		title: result.title,
   		embedurl: result.embedurl
   	}
-  }
+  })
 
   return {slip};
 }
@@ -111,7 +113,7 @@ async function create(slip) {
   		message = 'Created Successfully';
   	}
 
-  	return {
+  	return helper.decodeProperties({
   	'id': result.insertId,
   	'sessionId': slip.sessionId,
   	'position': slip.position,
@@ -127,7 +129,7 @@ async function create(slip) {
 			embedurl: slip.song.embedurl
 		},
 		'isCollapsed': true
-  };
+  });
 }
 
 async function update(id, slip){

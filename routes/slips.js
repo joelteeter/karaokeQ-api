@@ -22,7 +22,7 @@ router.get('/', async function(req, res, next) {
 		}
 	}
 });
-/* GET slips */
+/* GET slip */
 router.get('/:id', async function(req, res, next) {
 	try {
 		res.json(await slips.get(req.params.id));
@@ -63,6 +63,7 @@ router.delete('/:id', async function(req, res, next) {
   }
 	
 });
+/* DELETE slips by sessionId */
 router.delete('/', async function(req, res, next) {
 	let sessionId = req.query.sessionid;
 	if(sessionId) {
