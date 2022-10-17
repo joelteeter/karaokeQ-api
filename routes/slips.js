@@ -68,6 +68,24 @@ router.put('/:id',
 		next(err);
 	}
 });
+router.post('/balance/', 
+	async function(req, res, next) {
+	try {
+		res.json(await slips.balanceSlips(req.body));
+	} catch (err) {
+		console.error(`Error while updating slip`, err.message);
+		next(err);
+	}
+});
+router.post('/dragdrop/', 
+	async function(req, res, next) {
+	try {
+		res.json(await slips.dragDropSlip(req.body));
+	} catch (err) {
+		console.error(`Error while updating slip`, err.message);
+		next(err);
+	}
+});
 
 /* DELETE slip */
 router.delete('/:id', 

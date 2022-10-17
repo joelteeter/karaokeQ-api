@@ -20,7 +20,6 @@ async function getMultiple(page = 1) {
 }
 
 async function create(song) {
-	console.log('the song', song);
 	const theQuery = `INSERT INTO kq_songs	(artist, title, embedurl)
 		VALUES ("${song.artist.toString()}", "${song.title.toString()}", "${song.embedurl}")`;
 
