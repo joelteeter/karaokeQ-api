@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const slips = require('../services/slips');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 /* GET slips */
 router.get('/', async function(req, res, next) {
@@ -22,8 +22,23 @@ router.get('/', async function(req, res, next) {
 		}
 	}
 });
+/* GET slips by song id */
+router.get('/search/:songid?',
+	param('songid').not().isEmpty().trim().escape(), 
+	async function(req, res, next) {
+	if(req.query && req.query.songid) {
+		try {
+			res.json(await slips.getAllBySongId(req.query.songid));
+		} catch(err) {
+			console.error(`Error while searching slips`, err.message);
+			next(err);
+		}
+	}
+});
 /* GET slip */
-router.get('/:id', async function(req, res, next) {
+router.get('/:id', 
+	param('id').trim().escape(), 
+	async function(req, res, next) {
 	try {
 		res.json(await slips.get(req.params.id));
 	} catch (err) {
@@ -43,7 +58,9 @@ router.post('/', async function(req, res, next) {
 });
 
 /* PUT slip */
-router.put('/:id', async function(req, res, next) {
+router.put('/:id', 
+	param('id').trim().escape(), 
+	async function(req, res, next) {
 	try {
 		res.json(await slips.update(req.params.id, req.body));
 	} catch (err) {
@@ -53,7 +70,9 @@ router.put('/:id', async function(req, res, next) {
 });
 
 /* DELETE slip */
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id', 
+	param('id').trim().escape(), 
+	async function(req, res, next) {
 
 	try {
     res.json(await slips.remove(req.params.id));

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const singers = require('../services/singers');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 /* GET singers */
 router.get('/', async function(req, res, next) {
@@ -16,7 +16,9 @@ router.get('/', async function(req, res, next) {
 	}
 });
 /* GET singer */
-router.get('/:id', async function(req, res, next) {
+router.get('/:id', 
+	param('id').trim().escape(), 
+	async function(req, res, next) {
 	let sessionId = req.query.sessionid;
 	if(sessionId) {
 		try {
@@ -42,7 +44,8 @@ router.post('/',
 });
 
 /* PUT singer */
-router.put('/:id',
+router.put('/:id', 
+	param('id').trim().escape(), 
 	body('name').not().isEmpty().trim().escape(),
 	body('color').not().isEmpty().trim().escape(),
  async function(req, res, next) {
@@ -55,7 +58,9 @@ router.put('/:id',
 });
 
 /* DELETE singer by id */
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id', 
+	param('id').trim().escape(), 
+	async function(req, res, next) {
   try {
     res.json(await singers.remove(req.params.id));
   } catch (err) {
