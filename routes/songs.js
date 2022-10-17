@@ -36,6 +36,7 @@ router.post('/',
 
 /* PUT song */
 router.put('/:id', 
+	param('id').trim().escape(), 
 	body('title').not().isEmpty().trim().escape(),
 	body('artist').not().isEmpty().trim().escape(),
 	body('embedurl').not().isEmpty().trim().escape(),
@@ -56,14 +57,16 @@ router.get('/search/:searchTerm?',
 		try {
 			res.json(await songs.search(req.query.searchTerm));
 		} catch(err) {
-			console.error(`Error while creating song`, err.message);
+			console.error(`Error while searching song`, err.message);
 			next(err);
 		}
 	}
 });
 
 /* DELETE song */
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id',
+	param('id').trim().escape(), 
+	async function(req, res, next) {
   try {
     res.json(await songs.remove(req.params.id));
   } catch (err) {

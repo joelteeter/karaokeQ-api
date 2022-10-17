@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const sessions = require('../services/sessions');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 
 /* GET sessions */
 router.get('/', async function(req, res, next) {
@@ -13,7 +13,9 @@ router.get('/', async function(req, res, next) {
 	}
 });
 /* GET session */
-router.get('/:id', async function(req, res, next) {
+router.get('/:id', 
+	param('id').trim().escape(),
+	async function(req, res, next) {
 	try {
 		res.json(await sessions.get(req.params.id));
 	} catch (err) {
@@ -35,7 +37,8 @@ router.post('/',
 });
 
 /* PUT session */
-router.put('/:id',
+router.put('/:id', 
+	param('id').trim().escape(),
 	body('name').not().isEmpty().trim().escape(),
  async function(req, res, next) {
 	try {
@@ -47,7 +50,9 @@ router.put('/:id',
 });
 
 /* DELETE session */
-router.delete('/:id', async function(req, res, next) {
+router.delete('/:id', 
+	param('id').trim().escape(),
+	async function(req, res, next) {
   try {
     res.json(await sessions.remove(req.params.id));
   } catch (err) {
