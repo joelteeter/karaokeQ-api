@@ -41,7 +41,7 @@ async function create(song) {
 
 async function createBulk(songs) {
 	/* remove current songs */
-	//TODO: remove, this is from karafun data dump
+	//TODO: remove, this is from karafun csv data dump
 	let thing = await db.query(`DELETE FROM kq_songs`);
 	const theQuery = `
            insert into kq_songs 
