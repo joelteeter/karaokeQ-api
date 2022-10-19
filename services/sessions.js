@@ -3,7 +3,7 @@ const helper = require('../helper');
 const config = require('../config');
 
 async function getMultiple(page = 1) {
-	//TODO: use pagination, ie  LIMIT ${offset},${config.listPerPage}
+	//TODO: use pagination, ie  LIMIT ${offset},${config.listPerPage} after FROM
 	const offset = helper.getOffset(page, config.listPerPage);	
 	const rows = await db.query(
 		`SELECT id, name

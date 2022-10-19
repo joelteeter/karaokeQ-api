@@ -227,18 +227,23 @@ async function balanceSlips(slips){
     }
 
     //now for each piece, I grab the slips within and push them to what will be the new queue;
-    // TODO: look into a better way to do these updates, one big patch maybe?
+    //creating a bulk update along the way
     let newQueue = [];
+    let updates = {};
     let count = 1;
+    let bulkUpdateQuery = '';
     mapArray.forEach( (map) => {
       map.forEach( (a) => {
         a.position = count;
         newQueue.push(a);
-        //TODO: async here? possible data integrity issue?!?
-        update(a.id, a);
+        bulkUpdateQuery += `UPDATE kq_slips SET singer_id="${a.singer.id}", song_id="${a.song.id}", position="${a.position}" WHERE id=${Number(a.id)};`
+        //update(a.id, a);
         count++;
       })
     });
+    const result = await db.query(
+			bulkUpdateQuery
+		);
 
     //set the queue to the new queue
 
@@ -258,22 +263,30 @@ async function dragDropSlip(payload){
 		const draggedFrom = payload.draggedFrom;
 		const draggedTo = payload.draggedTo;
 		const droppedPosition = payload.slips[draggedTo].position;
+		let bulkUpdateQuery = '';
 
 		if(draggedFrom < draggedTo) {
 		  //was moved DOWN the queue
 		  for(let i=draggedFrom; i <= draggedTo; i ++) {
 		    slips[i].position -= 1;
-		    update(slips[i].id, slips[i]);
+		    //update(slips[i].id, slips[i]);
+		    bulkUpdateQuery += `UPDATE kq_slips SET singer_id="${slips[i].singer.id}", song_id="${slips[i].song.id}", position="${slips[i].position}" WHERE id=${Number(slips[i].id)};`
 		  }
 		} else if (draggedFrom > draggedTo) {
 		  //was moved UP the queue
 		  for(let i=draggedTo; i < draggedFrom; i++) {
 		    slips[i].position += 1;
-		    update(slips[i].id, slips[i]);
+		    //update(slips[i].id, slips[i]);
+		    bulkUpdateQuery += `UPDATE kq_slips SET singer_id="${slips[i].singer.id}", song_id="${slips[i].song.id}", position="${slips[i].position}" WHERE id=${Number(slips[i].id)};`
 		  }
 		}
 		slips[draggedFrom].position = droppedPosition;
-		update(slips[draggedFrom].id, slips[draggedFrom]);
+		//update(slips[draggedFrom].id, slips[draggedFrom]);
+		bulkUpdateQuery += `UPDATE kq_slips SET singer_id="${slips[draggedFrom].singer.id}", song_id="${slips[draggedFrom].song.id}", position="${slips[draggedFrom].position}" WHERE id=${Number(slips[draggedFrom].id)};`
+
+		const result = await db.query(
+			bulkUpdateQuery
+		);
 
 		return slips.sort((a, b) => (a.position > b.position) ? 1 : -1);
 	}
