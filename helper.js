@@ -1,6 +1,7 @@
 const he = require('he');
 
 //for when/if i paginate things
+//TODO: paginate some things - get all songs, then maybe sessions and singers too (less priority)
 function getOffset(currentPage = 1, listPerPage) {
 	return (currentPage -1) * [listPerPage];
 }

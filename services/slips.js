@@ -3,9 +3,8 @@ const helper = require('../helper');
 const config = require('../config');
 
 async function getAll() {
-	//TODO: delete this
+	//TODO: No need to get all as now slips have a session id, delete this after making sure it's not used anywhere
 	//TODO: i don't think i'll need this, if I do, paginate it as this is probably the biggest possible queries i'll make
-	//No need to get all as now slips have a session id
 	const rows = await db.query(
 		`SELECT slips.id, slips.session_id, slips.position, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
     FROM kq_singers AS singers 
@@ -40,6 +39,7 @@ async function getAll() {
 
 async function getAllBySessionId(sessionId) {
 	//This has replaced getAll()
+	//Get singer and song details from slips
 	const rows = await db.query(
 		`SELECT slips.id, slips.session_id, slips.position, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
     FROM kq_singers AS singers 
@@ -77,7 +77,7 @@ async function getAllBySessionId(sessionId) {
 }
 
 async function getAllBySongId(songId) {
-
+	//get all slips for specific song, songs can't be deleted if slips containg it do
 	const rows = await db.query(
 		`SELECT slips.id, slips.session_id
     FROM kq_slips AS slips WHERE slips.song_id = ${songId};
@@ -195,7 +195,7 @@ async function balanceSlips(slips){
 
 
     //set the singer map, i can use this to determine how many pieces/maps I need
-    //  foreach slip, map singer, to how many songs they have
+    //  foreach slip, map singer to how many songs they have
     //  the max will be how many 'chunks' of the queue i need
     for(let i = 0; i < slips.length; i++) {
       if(singerMap.has(slips[i].singer.id)) {
@@ -206,8 +206,8 @@ async function balanceSlips(slips){
     }
     const maxMaps = Math.max(...singerMap.values());
 
-    //create the pieces/maps
-    // creating them in memory so i loop through them and can assign values later
+    //create the required number of pieces/maps
+    // creating them  so i loop through them and can assign values later
     for(let j = 0; j < maxMaps; j++) {
       mapArray.push(new Map());
     }
@@ -227,7 +227,7 @@ async function balanceSlips(slips){
     }
 
     //now for each piece, I grab the slips within and push them to what will be the new queue;
-    // TODO: this mass update isn't great, could possibly send an array of just slip id and pos instead of so many smaller updates...
+    // TODO: look into a better way to do these updates, one big patch maybe?
     let newQueue = [];
     let count = 1;
     mapArray.forEach( (map) => {
