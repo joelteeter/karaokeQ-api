@@ -3,7 +3,9 @@ const helper = require('../helper');
 const config = require('../config');
 
 async function getAll() {
+	//TODO: delete this
 	//TODO: i don't think i'll need this, if I do, paginate it as this is probably the biggest possible queries i'll make
+	//No need to get all as now slips have a session id
 	const rows = await db.query(
 		`SELECT slips.id, slips.session_id, slips.position, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
     FROM kq_singers AS singers 
@@ -37,7 +39,7 @@ async function getAll() {
 }
 
 async function getAllBySessionId(sessionId) {
-
+	//This has replaced getAll()
 	const rows = await db.query(
 		`SELECT slips.id, slips.session_id, slips.position, singers.id AS singerID, singers.name, singers.color, songs.id AS songID, songs.artist, songs.title, songs.embedurl 
     FROM kq_singers AS singers 
@@ -184,10 +186,13 @@ async function balanceSlips(slips){
       each piece is a map of singer and song, if a slip has a singer who is already in a piece/map 
       then I add them to the next one that doesn't
   */
+  //TODO: look into refactoring with filter/map/reduce/etc
+
 	if(slips && slips.length > 0 ) {
 
 		const mapArray = [];
     const singerMap = new Map();
+
 
     //set the singer map, i can use this to determine how many pieces/maps I need
     //  foreach slip, map singer, to how many songs they have
@@ -239,10 +244,12 @@ async function balanceSlips(slips){
 
 		return newQueue;
 	}
-	return null;
+	return [];
 }
 
 async function dragDropSlip(payload){
+	//TODO get the array of slips here instead of sending it from frontend
+
 	//if moving DOWN the queue, need to offset things above its drop point
 	//if moving UP the queue, need to offset things below its drop point
 	//Then need to update the thing being dropped
